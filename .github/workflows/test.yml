@@ -1,0 +1,24 @@
+name: .NET Core
+
+on:
+  push:
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    name: xUnit test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Test
+      working-directory: ./Test
+      run: dotnet test --verbosity normal

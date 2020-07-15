@@ -7,11 +7,12 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ocs {
-    public class GlobalVariable {
+    public class Global {
         public Dictionary<string, string> Env { get; }
         private List<string> f;
         private string f0;
         public Regex Separator = new Regex(@"\s");
+        public StreamReader Reader { get; set; }
 
         public string F0 {
             get => f0;
@@ -35,7 +36,7 @@ namespace ocs {
         /// <summary>
         /// Current line number
         /// </summary>
-        public int NR = 0;
+        public int NR;
 
         #region exports functions
 
@@ -47,11 +48,9 @@ namespace ocs {
 
         public void print(object obj) => Console.WriteLine(obj);
 
-        public int i(string s) => int.Parse(s);
+        public int i(string s) => int.TryParse(s, out var res) ? res : (int) d(s);
 
-        public decimal m(string s) => decimal.Parse(s, NumberStyles.Float);
-
-        public double d(string s) => double.Parse(s, NumberStyles.Float);
+        public decimal d(string s) => decimal.Parse(s, NumberStyles.Float);
 
         #endregion
 
@@ -65,7 +64,7 @@ namespace ocs {
             else Env.Add(key, value);
         }
 
-        public GlobalVariable(GlobalVariableOptions options = null) {
+        public Global(GlobalVariableOptions options = null) {
             Env = new Dictionary<string, string>();
 
             options ??= new GlobalVariableOptions();

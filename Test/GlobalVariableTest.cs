@@ -15,16 +15,17 @@ namespace Test {
             };
 
             foreach (var item in data) {
-                var gv = new GlobalVariable {F0 = item.f0, Separator = item.sep};
+                var gv = new Global {F0 = item.f0, Separator = item.sep};
                 foreach (var (e,a) in new List<string>{item.f0}.Concat(item.sep.Split(item.f0)).Zip(gv.F)) {
                     Assert.Equal(e, a);
                 }
+                Assert.Equal(item.sep.Split(item.f0).Count(s => !string.IsNullOrEmpty(s)) + 1, gv.NF);
             }
         }
 
         [Fact]
         public void SetEnvTest() {
-            var gv = new GlobalVariable();
+            var gv = new Global();
             Assert.Empty(gv.Env);
 
             gv.SetEnv("XXX", "YYY");
@@ -47,7 +48,7 @@ namespace Test {
 
         [Fact]
         public void SetEnvWithGlobalTest() {
-            var gv = new GlobalVariable(new GlobalVariableOptions {LoadGlobalEnvironments = true});
+            var gv = new Global(new GlobalVariableOptions {LoadGlobalEnvironments = true});
             var env = Environment.GetEnvironmentVariables();
             Assert.NotEmpty(gv.Env);
             foreach (var key in gv.Env.Keys) {

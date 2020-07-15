@@ -1,0 +1,33 @@
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Text;
+
+namespace Test {
+    public class IoProxy : IDisposable {
+        private readonly TextReader defaultStdIn = Console.In;
+        private readonly TextWriter defaultStdOut = Console.Out;
+
+        private StringReader stdIn;
+        private readonly StringWriter stdOut;
+
+        public IoProxy() {
+            stdOut = new StringWriter();
+            Console.SetOut(stdOut);
+        }
+
+        public void WriteToStdIn(IEnumerable<string> lines) =>
+            stdIn = new StringReader(string.Join(Environment.NewLine, lines));
+
+        public string ReadAllFromStdOut() => stdOut == null ? "" : stdOut.ToString();
+
+        public IEnumerable<string> ReadLineFromStdOut() => ReadAllFromStdOut().Split(Environment.NewLine);
+
+        public void Dispose() {
+            stdIn?.Dispose();
+            stdOut?.Dispose();
+            Console.SetOut(defaultStdOut);
+            Console.SetIn(defaultStdIn);
+        }
+    }
+}

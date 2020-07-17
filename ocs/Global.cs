@@ -11,7 +11,7 @@ namespace ocs {
         public Dictionary<string, string> Env { get; }
         private List<string> f;
         private string f0;
-        public Regex Separator = new Regex(@"\s");
+        public Regex Separator;
         public StreamReader Reader { get; set; }
 
         public string F0 {

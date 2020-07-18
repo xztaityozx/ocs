@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -9,34 +10,88 @@ using Xunit;
 namespace Test {
     public class InnerFunctionTest {
         [Fact]
+        public void PrintlnTest() {
+            var g = new Global();
+            var data = new object[] {
+                1, 1M, 10.55, "string"
+            };
+
+            foreach (var obj in data) {
+                using var iop = new IoProxy();
+                g.println(obj);
+                Assert.Equal(obj + Environment.NewLine, iop.ReadAllFromStdOut());
+            }
+
+            {
+                using var iop =new IoProxy();
+                var tuple = (1, 2, 3, "xxx");
+                g.println(tuple);
+                Assert.Equal(string.Join(" ", tuple) + Environment.NewLine, iop.ReadAllFromStdOut());
+            }
+
+            {
+                using var iop = new IoProxy();
+                var tuple = (1, 2, 3, "xxx");
+                g.Env.Add("OFS", ":");
+                g.println(tuple);
+                Assert.Equal(string.Join(":", tuple) + Environment.NewLine, iop.ReadAllFromStdOut());
+            }
+        }
+
+        [Fact]
         public void PrintTest() {
             var gv = new Global();
 
             var data = new object[] {
-                1, "string", 1M, 10.55
+                1, 1M, 10.55
             };
 
             foreach (var obj in data) {
                 using var iop = new IoProxy();
                 gv.print(obj);
-                Assert.Equal(obj + Environment.NewLine, iop.ReadAllFromStdOut());
+                Assert.Equal(obj.ToString(), iop.ReadAllFromStdOut());
             }
+        }
+
+        [Fact]
+        public void StringPrintTest() {
+            var g = new Global();
+            using var iop = new IoProxy();
+            g.print("abc");
+            Assert.Equal("abc", iop.ReadAllFromStdOut());
         }
 
         [Fact]
         public void PrintCollectionTest() {
             var gv = new Global();
-            var data = new IEnumerable<object>[] {
-                new object[] {1,2,3,4,5},
-                new object[] {"a","b","c","d"}, 
-                new object[] {1M,2M,3M},
-            };
+            var data = new[] {"a", "b", "c"};
+            var expect = string.Join(Environment.NewLine, data) + Environment.NewLine;
 
-            foreach (var obj in data) {
+            using var iop = new IoProxy();
+            gv.print(data);
+
+            Assert.Equal(expect, iop.ReadAllFromStdOut());
+        }
+
+        [Fact]
+        public void TuplePrintTest() {
+            var gv = new Global();
+            var data = (1, 3, "xx");
+            var expect = string.Join(" ", data);
+
+            {
                 using var iop = new IoProxy();
-                var array = obj.ToArray();
-                gv.print(array);
-                Assert.Equal(string.Join(Environment.NewLine, array) + Environment.NewLine, iop.ReadAllFromStdOut());
+                gv.print(data);
+
+                Assert.Equal(expect, iop.ReadAllFromStdOut());
+            }
+            {
+                using var iop = new IoProxy();
+
+                gv.Env.Add("OFS", ":");
+                gv.print(data);
+                expect = string.Join(":", data);
+                Assert.Equal(expect, iop.ReadAllFromStdOut());
             }
         }
 

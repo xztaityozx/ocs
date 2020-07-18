@@ -16,8 +16,6 @@ namespace Test {
             Console.SetOut(stdOut);
         }
 
-        public void WriteToStdIn(IEnumerable<string> lines) =>
-            stdIn = new StringReader(string.Join(Environment.NewLine, lines));
 
         public string ReadAllFromStdOut() => stdOut == null ? "" : stdOut.ToString();
 

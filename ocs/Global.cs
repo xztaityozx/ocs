@@ -7,13 +7,29 @@ using System.Linq;
 using System.Text.RegularExpressions;
 
 namespace ocs {
+    /// <summary>
+    /// スクリプト内で自由に使えるメソッド、変数を定義するクラス
+    /// </summary>
     public class Global {
+        /// <summary>
+        /// Environments
+        /// </summary>
         public Dictionary<string, string> Env { get; }
         private List<string> f;
         private string f0;
+        /// <summary>
+        /// Field separator
+        /// </summary>
         public Regex Separator;
-        public StreamReader Reader { get; set; }
 
+        /// <summary>
+        /// Input stream
+        /// </summary>
+        public TextReader Reader { get; set; }
+
+        /// <summary>
+        /// Current line
+        /// </summary>
         public string F0 {
             get => f0;
             set {
@@ -23,6 +39,9 @@ namespace ocs {
             }
         }
 
+        /// <summary>
+        /// Split fields
+        /// </summary>
         public List<string> F => f ??= new List<string>{F0}
             .Concat(
                 Separator.Split(F0).Where(s => !string.IsNullOrEmpty(s))
@@ -46,11 +65,33 @@ namespace ocs {
             }
         }
 
-        public void print(object obj) => Console.WriteLine(obj);
+        public void print(string str) => Console.Write(str);
 
-        public int i(string s) => int.TryParse(s, out var res) ? res : (int) d(s);
+        public void print(object obj) {
+            switch (obj) {
+                case ValueTuple t:
+                    Console.Write(string.Join(Env.ContainsKey("OFS") ? Env["OFS"] : " ", t));
+                    break;
+                default:
+                    Console.Write(obj);
+                    break;
+            }
+        }
 
-        public decimal d(string s) => decimal.Parse(s, NumberStyles.Float);
+        public void println(object obj) {
+            switch (obj) {
+                case ValueTuple t:
+                    Console.WriteLine(string.Join(Env.ContainsKey("OFS") ? Env["OFS"] : " ", t));
+                    break;
+                default:
+                    Console.WriteLine(obj);
+                    break;
+            }
+        }
+
+        public int i(string s) => int.TryParse(s, NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat, out var res) ? res : (int) d(s);
+
+        public decimal d(string s) => decimal.Parse(s, NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat);
 
         #endregion
 

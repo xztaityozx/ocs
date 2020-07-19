@@ -1,0 +1,49 @@
+name: release
+
+on:
+  push:
+    tags:
+      - 'v.*
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        runtime: [win-x64, win-x86, win-arm, win-arm64, linux-x64, linux-arm, linux-arm64, osx-x64]
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Install dependencies
+      run: dotnet restore
+    - name: publish
+      run: dotnet publish -c Release --self-contained -r ${{ matrix.runtime }}
+    - name: archive binary
+      run: |
+        bin="ocs"
+        [[ "${{ matrix.runtime }}" =~ "win*" ]] && bin=ocs.exe
+        zip release-${{ matrix.runtime }} ./bin/Release/netcoreapp3.1/${{ matrix.runtime }}/$bin
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+        draft: false
+      prerelease: false
+    - name: Upload Release Asset
+      id: upload-release-asset 
+      uses: actions/upload-release-asset@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }} # This pulls from the CREATE RELEASE step above, referencing it's ID to get its outputs object, which include a `upload_url`. See this blog post for more info: https://jasonet.co/posts/new-features-of-github-actions/#passing-data-to-future-steps 
+        asset_path: ./release-${{ matrix.runtime }}.zip
+        asset_name: release-${{ matrix.runtime }}-${{ github.ref }}.zip
+        asset_content_type: application/zip        

@@ -1,0 +1,66 @@
+name: .NET Core CI/CD
+
+on: [push, pull_request]
+
+jobs:
+  test:
+    name: xUnit test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 3.1.101
+    - name: Test
+      working-directory: ./Test
+      run: dotnet test --verbosity normal
+    
+  releases:
+    name: Create GitHub Release
+    if: contains(github.ref, 'tags/v')
+    needs: [test]
+    runs-on: ubuntu-latest
+    steps:
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          draft: false
+          prerelease: false
+      - name: Output Release URL File
+        run: echo "${{ steps.create_release.outputs.upload_url }}" > release_url.txt
+      - name: Save Release URL File for publish
+        uses: actions/upload-artifact@v1
+        with:
+          name: release_url
+          path: release_url.txt
+
+  pulblish:
+    if: contains(github.ref, 'tags/v')
+    needs: [test, releases]
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        runtime_id: [win-x64, linux-x64, osx-x64]
+    steps:
+      - uses: actions/checkout@v1
+      - name: Load Relase URL File from release job
+        uses: actions/download-artifact@v1
+        with:
+          name: release_url
+      - name: Setup .NET Core 3.0 (current)
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: 3.1.101
+      - name: Build
+        run: |
+          dotnet publish 

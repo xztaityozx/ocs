@@ -63,13 +63,13 @@ jobs:
       #     TAG_REF_NAME: ${{ github.ref }}
         
       - name: dotnet publish on windows
-        if: runner.os == windows-latest
+        if: runner.os == 'windows-latest'
         working-directory: ./ocs
         run: |
           ./builder.ps1
 
       - name: dotnet publish on ubuntu, macOS
-        if: runner.os != windows-latest
+        if: runner.os != 'windows-latest'
         run: |
           ./builder.sh ${{ matrix.os }}
       

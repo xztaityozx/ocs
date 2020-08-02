@@ -97,16 +97,15 @@ jobs:
         env:
           TAG_REF_NAME: 1.0.0
 
-      - uses: actions/checkout@v2
       - name: dotnet publish
         shell: bash
-        run: echo ${{ steps.vars.outputs.runtime_id }} > ocs/${{ steps.vars.outputs.runtime_id }}
+        run: echo ${{ steps.vars.outputs.runtime_id }} > ${{ steps.vars.outputs.runtime_id }}
 
       - name: Upload zip archive
         uses: actions/upload-artifact@v1
         with:
           name: ${{ steps.vars.outputs.runtime_id }}
-          path: ocs/${{ steps.vars.outputs.runtime_id }}
+          path: ${{ steps.vars.outputs.runtime_id }}
 
 
   create-releases:
@@ -171,6 +170,6 @@ jobs:
         with: 
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
           asset_path: ./${{ matrix.runtime_id }}.zip
-          asset_name: ${{ steps.get_release_info.outputs.file_name }}-${{ matrix.runrime_id }}.zip
+          asset_name: ${{ steps.get_release_info.outputs.file_name }}-${{ matrix.runtime_id }}.zip
           asset_content_type: application/zip      
       

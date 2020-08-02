@@ -14,12 +14,12 @@ jobs:
       NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
       NUGET_XMLDOC_MODE: skip
     steps:
-      - name: Extract tag name
+      - name: vars
         id: vars
         shell: bash
         run: |
           echo ::set-output name=version::v1.0.0
-          echo ::set-output name=runtime_id::"$(echo ${{ matrix.os }} | sed 's/windows/win/;s/ubuntu/linux/;s/macOS/osx/;s/latest/x64/)"
+          echo ::set-output name=runtime_id::"$(echo ${{ matrix.os }} | sed 's/windows/win/;s/ubuntu/linux/;s/macOS/osx/;s/latest/x64/')"
         env:
           TAG_REF_NAME: ${{ github.ref }}
             

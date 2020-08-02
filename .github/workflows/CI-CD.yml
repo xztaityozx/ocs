@@ -4,7 +4,7 @@ on: [push, pull_request]
 
 jobs:
   dotnet-publish:
-    if: contains(github.ref, 'tags/v')
+    # if: contains(github.ref, 'tags/v')
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macOS-latest]
@@ -15,12 +15,14 @@ jobs:
       NUGET_XMLDOC_MODE: skip
     steps:
       - name: Extract tag name
-        id: tag
-        uses: actions/github-script@0.2.0
-        with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          script: |
-            return context.payload.ref.replace(/\/refs\/tags\//, '');
+        id: vars
+        shell: bash
+        run: |
+          # echo ::set-output=version::${TAG_REF_NAME##*/v}
+          echo ::set-output=version::v1.0.0
+          echo ::set-output=runtime_id::"$(echo ${{ matrix.os }} | sed 's/windows/win/;s/ubuntu/linux/;s/macOS/osx/;s/latest/x64/)"
+        env:
+          TAG_REF_NAME: ${{ github.ref }}
             
       - uses: actions/checkout@v2
         
@@ -36,20 +38,20 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
 
-      - name: dotnet publish on windows
-        if: runner.os == 'Windows'
+      - name: dotnet publish
         working-directory: ./ocs
         run: |
-          dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:Version=${{ steps.tag.outputs.result }} -o ${{ matrix.os }}
-
-      - name: dotnet publish on ubuntu, macOS
-        if: runner.os != 'Windows'
-        run: |
-          ./builder.sh ${{ matrix.os }} ${{ steps.tag.outputs.result }}
+          dotnet publish -c Release \
+                         -r ${{ steps.vars.outputs.runtime_id }} \
+                         --self-contained true \
+                         -p:PublishSingleFile=true \
+                         -p:PublishReadyToRun=true \
+                         -p:Version=${{ steps.vars.outputs.version }} \
+                         -o ${{ steps.vars.outputs.runtime_id }}
       
       - name: Upload zip archive
         uses: actions/upload-artifact@v1
         with:
-          name: ${{ matrix.os }}
-          path: ocs/${{ matrix.os }}
+          name: ${{ steps.vars.outputs.runtime_id }}
+          path: ocs/${{ steps.vars.outputs.runtime_id }}
 

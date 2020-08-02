@@ -98,8 +98,7 @@ jobs:
           TAG_REF_NAME: 1.0.0
             
       - name: dotnet publish
-        run: |
-          echo "abc" > ./ocs/${{ matrix.os }}
+        run: touch ./ocs/${{ matrix.os }}
 
       - name: Upload zip archive
         uses: actions/upload-artifact@v1

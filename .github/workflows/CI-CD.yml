@@ -3,35 +3,7 @@ name: .NET Core CI/CD
 on: [push, pull_request]
 
 jobs:
-  test:
-    name: xUnit test
-    runs-on: ${{ matrix.os }}
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macOS-latest]
-        dotnet-version: [3.1]
-    env: 
-      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
-      NUGET_XMLDOC_MODE: skip
-
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v1
-      with:
-        path: ${{ github.workspace }}/.nuget/packages
-        key: nuget-${{ matrix.os }}-${{ matrix.dotnet-version }}
-        restore-keys: |
-          nuget-${{ matrix.os }}-
-    - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
-      with:
-        dotnet-version: ${{ matrix.dotnet-version }}
-    - name: Test
-      working-directory: ./Test
-      run: dotnet test --verbosity normal -c Debug
-
   dotnet-publish:
-    needs: [test]
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macOS-latest]
@@ -55,23 +27,23 @@ jobs:
         with:
           dotnet-version: ${{ matrix.dotnet-version }}
       
-      # - name: vars
-      #   id: vars
-      #   run: |
-      #     echo ::set-output name=version::${TAG_REF_NAME##*/v}
-      #   env:
-      #     TAG_REF_NAME: ${{ github.ref }}
-        
+      - name: vars
+        id: vars
+        run: |
+          echo ::set-output name=version::${TAG_REF_NAME##*/v}
+        env:
+          TAG_REF_NAME: ${{ github.ref }}
+
       - name: dotnet publish on windows
         if: runner.os == 'Windows'
         working-directory: ./ocs
         run: |
-          dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ${{ matrix.os }}
+          dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:Version=${{ steps.vars.outputs.version }} -o ${{ matrix.os }}
 
       - name: dotnet publish on ubuntu, macOS
         if: runner.os != 'Windows'
         run: |
-          ./builder.sh ${{ matrix.os }}
+          ./builder.sh ${{ matrix.os }} ${{ steps.vars.outputs.version }}
       
       - name: Upload zip archive
         uses: actions/upload-artifact@v1

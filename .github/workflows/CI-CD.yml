@@ -76,6 +76,6 @@ jobs:
       - name: Upload zip archive
         uses: actions/upload-artifact@v1
         with:
-          name: ${{ steps.vars.outputs.runtime_id }}
-          path: ocs/${{ steps.vars.outputs.runtime_id }}
+          name: ${{ matrix.os }}
+          path: ocs/${{ matrix.os }}
 

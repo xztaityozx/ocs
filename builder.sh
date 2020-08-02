@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 
 runtime_id="linux-x64"
-[[ $"{1}" = "macOS-latest" ]] runtime_id="osx-x64"
+[[ $"{1}" = "macOS-latest" ]] && runtime_id="osx-x64"
 
 
 cd ./ocs

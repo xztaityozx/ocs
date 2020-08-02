@@ -40,13 +40,7 @@ jobs:
       - name: dotnet publish
         working-directory: ./ocs
         run: |
-          dotnet publish -c Release \
-                         -r ${{ steps.vars.outputs.runtime_id }} \
-                         --self-contained true \
-                         -p:PublishSingleFile=true \
-                         -p:PublishReadyToRun=true \
-                         -p:Version=${{ steps.vars.outputs.version }} \
-                         -o ${{ steps.vars.outputs.runtime_id }}
+          dotnet publish -c Release -r ${{ steps.vars.outputs.runtime_id }} --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:Version=${{ steps.vars.outputs.version }} -o ${{ steps.vars.outputs.runtime_id }}
       
       - name: Upload zip archive
         uses: actions/upload-artifact@v1

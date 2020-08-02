@@ -100,7 +100,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: dotnet publish
         shell: bash
-        run: touch ocs/${{ matrix.os }}
+        run: echo ${{ steps.vars.outputs.runtime_id }} > ocs/${{ steps.vars.outputs.runtime_id }}
 
       - name: Upload zip archive
         uses: actions/upload-artifact@v1

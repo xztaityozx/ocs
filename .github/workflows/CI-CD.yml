@@ -50,7 +50,7 @@ jobs:
           echo ::set-output name=version::${TAG_REF_NAME##*/v}
           echo ::set-output name=runtime_id::"$(echo ${{ matrix.os }} | sed 's/windows/win/;s/ubuntu/linux/;s/macOS/osx/;s/latest/x64/')"
         env:
-          TAG_REF_NAME: v1.0.0
+          TAG_REF_NAME: 1.0.0
             
       - uses: actions/checkout@v2
         
@@ -127,7 +127,8 @@ jobs:
         shell: bash
         run: |
           echo ::set-output name=file_name::${REPOSITORY_NAME##*/}-${TAG_REF_NAME##*/v}
-          echo ::set-output name=upload_url::"$(cat release_url.txt)"
+          value=`cat release_url.txt`
+          echo ::set-output name=upload_url::$value
           echo ::set-output name=version::${TAG_REF_NAME##*/v}
         env:
           TAG_REF_NAME: v1.0.0

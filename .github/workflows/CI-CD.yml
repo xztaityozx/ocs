@@ -66,7 +66,7 @@ jobs:
         if: runner.os == 'Windows'
         working-directory: ./ocs
         run: |
-          ./builder.ps1
+          dotnet publish -c Release -r win-x64 --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ${{ matrix.os }}
 
       - name: dotnet publish on ubuntu, macOS
         if: runner.os != 'Windows'

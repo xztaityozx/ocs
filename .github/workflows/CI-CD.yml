@@ -3,79 +3,34 @@ name: .NET Core CI/CD
 on: [push]
 
 jobs:
-  # test:
-  #   name: xUnit test
-  #   runs-on: ${{ matrix.os }}
-  #   strategy:
-  #     matrix:
-  #       os: [ubuntu-latest, windows-latest, macOS-latest]
-  #       dotnet-version: [3.1]
-  #   env: 
-  #     DOTNET_CLI_TELEMETRY_OPTOUT: 1
-  #     DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
-  #     NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
-  #     NUGET_XMLDOC_MODE: skip
+  test:
+    name: xUnit test
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest, macOS-latest]
+        dotnet-version: [3.1]
+    env: 
+      DOTNET_CLI_TELEMETRY_OPTOUT: 1
+      DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
+      NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
+      NUGET_XMLDOC_MODE: skip
 
-  #   steps:
-  #   - uses: actions/checkout@v2
-  #   - uses: actions/cache@v1
-  #     with:
-  #       path: ${{ github.workspace }}/.nuget/packages
-  #       key: nuget-${{ matrix.os }}-${{ matrix.dotnet-version }}
-  #       restore-keys: |
-  #         nuget-${{ matrix.os }}-
-  #   - name: Setup .NET Core
-  #     uses: actions/setup-dotnet@v1
-  #     with:
-  #       dotnet-version: ${{ matrix.dotnet-version }}
-  #   - name: Test
-  #     working-directory: ./Test
-  #     run: dotnet test --verbosity normal -c Debug
-
-  # dotnet-publish:
-  #   # if: contains(github.ref, 'tags/v')
-  #   strategy:
-  #     matrix:
-  #       os: [windows-latest, ubuntu-latest, macOS-latest]
-  #       dotnet-version: [3.1]
-  #   runs-on: ${{ matrix.os }}
-  #   env: 
-  #     NUGET_PACKAGES: ${{ github.workspace }}/.nuget/packages
-  #     NUGET_XMLDOC_MODE: skip
-  #   steps:
-  #     - name: vars
-  #       id: vars
-  #       shell: bash
-  #       run: |
-  #         echo ::set-output name=version::${TAG_REF_NAME##*/v}
-  #         echo ::set-output name=runtime_id::"$(echo ${{ matrix.os }} | sed 's/windows/win/;s/ubuntu/linux/;s/macOS/osx/;s/latest/x64/')"
-  #       env:
-  #         TAG_REF_NAME: 1.0.0
-            
-  #     - uses: actions/checkout@v2
-        
-  #     - uses: actions/cache@v1
-  #       with:
-  #         path: ${{ github.workspace }}/.nuget/packages
-  #         key: nuget-${{ matrix.os }}-${{ matrix.dotnet-version }}
-  #         restore-keys: |
-  #           nuget-${{ matrix.os }}-
-            
-  #     - name: Setup .NET Core
-  #       uses: actions/setup-dotnet@v1
-  #       with:
-  #         dotnet-version: ${{ matrix.dotnet-version }}
-
-  #     - name: dotnet publish
-  #       working-directory: ./ocs
-  #       run: |
-  #         dotnet publish -c Release -r ${{ steps.vars.outputs.runtime_id }} --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:Version=${{ steps.vars.outputs.version }} -o ${{ steps.vars.outputs.runtime_id }}
-      
-  #     - name: Upload build result
-  #       uses: actions/upload-artifact@v1
-  #       with:
-  #         name: ${{ steps.vars.outputs.runtime_id }}
-  #         path: ocs/${{ steps.vars.outputs.runtime_id }}
+    steps:
+    - uses: actions/checkout@v2
+    - uses: actions/cache@v1
+      with:
+        path: ${{ github.workspace }}/.nuget/packages
+        key: nuget-${{ matrix.os }}-${{ matrix.dotnet-version }}
+        restore-keys: |
+          nuget-${{ matrix.os }}-
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: ${{ matrix.dotnet-version }}
+    - name: Test
+      working-directory: ./Test
+      run: dotnet test --verbosity normal -c Debug
 
   dotnet-publish:
     # if: contains(github.ref, 'tags/v')
@@ -96,17 +51,31 @@ jobs:
           echo ::set-output name=runtime_id::"$(echo ${{ matrix.os }} | sed 's/windows/win/;s/ubuntu/linux/;s/macOS/osx/;s/latest/x64/')"
         env:
           TAG_REF_NAME: 1.0.0
+            
+      - uses: actions/checkout@v2
+        
+      - uses: actions/cache@v1
+        with:
+          path: ${{ github.workspace }}/.nuget/packages
+          key: nuget-${{ matrix.os }}-${{ matrix.dotnet-version }}
+          restore-keys: |
+            nuget-${{ matrix.os }}-
+            
+      - name: Setup .NET Core
+        uses: actions/setup-dotnet@v1
+        with:
+          dotnet-version: ${{ matrix.dotnet-version }}
 
       - name: dotnet publish
-        shell: bash
-        run: echo ${{ steps.vars.outputs.runtime_id }} > ${{ steps.vars.outputs.runtime_id }}
-
-      - name: Upload zip archive
+        working-directory: ./ocs
+        run: |
+          dotnet publish -c Release -r ${{ steps.vars.outputs.runtime_id }} --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -p:Version=${{ steps.vars.outputs.version }} -o ${{ steps.vars.outputs.runtime_id }}
+      
+      - name: Upload build result
         uses: actions/upload-artifact@v1
         with:
           name: ${{ steps.vars.outputs.runtime_id }}
-          path: ${{ steps.vars.outputs.runtime_id }}
-
+          path: ocs/${{ steps.vars.outputs.runtime_id }}
 
   create-releases:
     name: Create GitHub Release

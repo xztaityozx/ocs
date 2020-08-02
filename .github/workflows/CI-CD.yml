@@ -47,11 +47,10 @@ jobs:
         id: vars
         shell: bash
         run: |
-          # echo ::set-output name=version::${TAG_REF_NAME##*/v}
-          echo ::set-output name=version::1.0.0
+          echo ::set-output name=version::${TAG_REF_NAME##*/v}
           echo ::set-output name=runtime_id::"$(echo ${{ matrix.os }} | sed 's/windows/win/;s/ubuntu/linux/;s/macOS/osx/;s/latest/x64/')"
         env:
-          TAG_REF_NAME: ${{ github.ref }}
+          TAG_REF_NAME: v1.0.0
             
       - uses: actions/checkout@v2
         
@@ -125,14 +124,14 @@ jobs:
       
       - name: Get Release Info
         id: get_release_info
+        shell: bash
         run: |
           echo ::set-output name=file_name::${REPOSITORY_NAME##*/}-${TAG_REF_NAME##*/v}
-          value=`cat release_url.txt`
+          value=`cat release_url/release_url.txt`
           echo ::set-output name=upload_url::$value
-          # echo ::set-output name=version::${TAG_REF_NAME##*/v}
-          echo ::set-output name=version::v1.0.0
+          echo ::set-output name=version::${TAG_REF_NAME##*/v}
         env:
-          TAG_REF_NAME: ${{ github.ref }}
+          TAG_REF_NAME: v1.0.0
           REPOSITORY_NAME: ${{ github.repository }}
       
       - name: Upload assets to GitHub Release
@@ -141,7 +140,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with: 
           upload_url: ${{ steps.get_release_info.outputs.upload_url }}
-          asset_path: ./${{ matrix.runtime_id }}.zip
-          asset_name: ${{ steps.get_release_info.outputs.file_name }}-${{ matrix.runtime_id }}.zip
-          asset_content_type: application/zip
+          asset_path: ./${{ matrix.rid }}.zip
+          asset_name: ${{ steps.get_release_info.outputs.file_name }}-${{ matrix.rid }}-core${{ matrix.dotnet-version }}.zip
+          asset_content_type: application/zip      
       

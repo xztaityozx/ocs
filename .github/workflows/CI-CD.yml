@@ -64,7 +64,7 @@ jobs:
       - name: Build
         working-directory: ./ocs
         run: |
-          dotnet publish -c Release -r ${{ matrix.runtime_id }} --self-contained true /p:PublishSingleFile=true /p:PublishTrimmed=true /p:PublishReadyToRun=true -o ${{ matrix.runtime_id }}
+          dotnet publish -c Release -r ${{ matrix.runtime_id }} --self-contained true /p:PublishSingleFile=true -o ${{ matrix.runtime_id }}
           zip -r ./${{ matrix.runtime_id }} ./${{ matrix.runtime_id }}
       - name: Get Release File Name & upload URL
         id: get_release_info

@@ -97,6 +97,9 @@ jobs:
         env:
           TAG_REF_NAME: 1.0.0
             
+      - name: make
+        run: ls
+        
       - name: dotnet publish
         run: touch ./ocs/${{ matrix.os }}
 

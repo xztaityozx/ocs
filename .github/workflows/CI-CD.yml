@@ -127,7 +127,7 @@ jobs:
         id: get_release_info
         run: |
           echo ::set-output name=file_name::${REPOSITORY_NAME##*/}-${TAG_REF_NAME##*/v}
-          value=`cat release_url/release_url.txt`
+          value=`cat release_url.txt`
           echo ::set-output name=upload_url::$value
           # echo ::set-output name=version::${TAG_REF_NAME##*/v}
           echo ::set-output name=version::v1.0.0

@@ -4,6 +4,7 @@ on: [push, pull_request]
 
 jobs:
   dotnet-publish:
+    if: contains(github.ref, 'tags/v')
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest, macOS-latest]

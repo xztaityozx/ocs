@@ -34,7 +34,7 @@ namespace ocs {
                     cc.TimestampFormat = "[HH:mm:ss]";
                     cc.LogToStandardErrorThreshold = LogLevel.Warning;
                 });
-            }).CreateLogger<Program>();
+            }).CreateLogger("ocs");
 
             try {
 
@@ -46,8 +46,8 @@ namespace ocs {
 
                 await script.RunAsync(global, null, cts.Token);
             }
-            catch (OperationCanceledException e) {
-                logger.LogWarning(e.ToString());
+            catch (OperationCanceledException) {
+                logger.LogWarning("ocs canceled by user");
             }
             catch (Exception e) {
                 logger.LogCritical(e.ToString());

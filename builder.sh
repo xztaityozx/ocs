@@ -5,4 +5,4 @@ runtime_id="linux-x64"
 
 
 cd ./ocs
-dotnet publish -r ${runtime_id} -c Release --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ${runtime_id}
+dotnet publish -r ${runtime_id} -c Release --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -o ${1}

@@ -27,6 +27,7 @@ jobs:
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
     - name: Build
+      working-directory: ./Test
       run: dotnet Build -c Debug
     - name: Test
       working-directory: ./Test
@@ -67,6 +68,7 @@ jobs:
           TAG_REF_NAME: ${{ github.ref }}
         
       - name: dotnet publish
+        working-directory: ./ocs
         run: |
           dotnet publish --self-contained true -r ${{ steps.vars.outputs.runtime_id }} -c Release -o ${{ steps.vars.outputs.runtime_id }} -p:Version=${{ steps.vars.outputs.version }}
           zip -r ${{ steps.vars.outputs.runtime_id }} ${{ steps.vars.outputs.runtime_id }}
@@ -75,7 +77,7 @@ jobs:
         uses: actions/upload-artifact@v1
         with:
           name: ${{ steps.vars.outputs.runtime_id }}
-          path: ${{ steps.vars.outputs.runtime_id }}.zip
+          path: ocs/${{ steps.vars.outputs.runtime_id }}.zip
 
   create-releases:
     name: Create GitHub Release

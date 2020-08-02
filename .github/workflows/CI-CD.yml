@@ -96,18 +96,16 @@ jobs:
           echo ::set-output name=runtime_id::"$(echo ${{ matrix.os }} | sed 's/windows/win/;s/ubuntu/linux/;s/macOS/osx/;s/latest/x64/')"
         env:
           TAG_REF_NAME: 1.0.0
-            
-      - name: make
-        run: ls
         
       - name: dotnet publish
-        run: touch ./ocs/${{ matrix.os }}
+        shell: bash
+        run: touch ${{ matrix.os }}
 
       - name: Upload zip archive
         uses: actions/upload-artifact@v1
         with:
           name: ${{ steps.vars.outputs.runtime_id }}
-          path: ocs/${{ steps.vars.outputs.runtime_id }}
+          path: ${{ steps.vars.outputs.runtime_id }}
 
 
   create-releases:

@@ -13,9 +13,35 @@ namespace ocs {
             );
             var global = opt.BuildGlobal();
             var builder = new ScriptBuilder();
+
+            var blockParser = new BlockParser();
+            try {
+                blockParser.Parse(opt.Code);
+            }
+            catch (FormatException e) {
+                Logger.LogError(e.Message);
+            }
+            catch(Exception e) {
+                Logger.LogCritical(e);
+            }
+
+            // BEGINブロック
             builder.AddCodeBlock(opt.BeginBlock, ScriptBuilder.BlockType.Begin);
+            foreach (var begin in blockParser.BeginBlock) {
+                builder.AddCodeBlock(begin, ScriptBuilder.BlockType.Begin);
+            }
+
+            // ENDブロック
             builder.AddCodeBlock(opt.EndBlock, ScriptBuilder.BlockType.End);
-            builder.AddCodeBlock(opt.Code);
+            foreach (var end in blockParser.EndBlock) {
+                builder.AddCodeBlock(end, ScriptBuilder.BlockType.End);
+            }
+
+            // Mainブロック
+            foreach (var main in blockParser.MainBlock) {
+                builder.AddCodeBlock(main);
+            }
+
 
             if (!string.IsNullOrEmpty(opt.Imports)) {
                 var imports = opt.Imports.Split(',', StringSplitOptions.RemoveEmptyEntries);
@@ -35,11 +61,13 @@ namespace ocs {
                     Logger.LogWarning(diagnostic.ToString());
                 }
 
+                if(opt.ShowGeneratedCode) Logger.LogInformation($"Generated Code\n{builder.GeneratedCode}");
+
                 var state = await script.RunAsync(global, null, cts.Token);
                 if (state.Exception != null) throw state.Exception;
             }
             catch (OperationCanceledException e) {
-                Logger.LogCritical(e.Message);
+                Logger.LogError(e.Message);
             }
             catch (Exception e) {
                 Logger.LogCritical(e.Message);

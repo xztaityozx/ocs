@@ -27,6 +27,8 @@ namespace ocs {
 
         private readonly List<string> assemblyList = new List<string>();
 
+        public string GeneratedCode { get; private set; }
+
         /// <summary>
         /// Add imports
         /// </summary>
@@ -76,7 +78,9 @@ namespace ocs {
                 .AddImports("System", "System.Linq", "System.Collections", "System.Collections.Generic")
                 .AddImports(importList);
 
-            var script = CSharpScript.Create(BuildCode(), opt, typeof(Global));
+            GeneratedCode = BuildCode();
+
+            var script = CSharpScript.Create(GeneratedCode, opt, typeof(Global));
 
             var compileResult = script.Compile(token);
 

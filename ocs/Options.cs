@@ -23,6 +23,9 @@ namespace ocs {
         [Option("env", HelpText = "load global environments")]
         public bool LoadEnvironments { get; set; }
 
+        [Option("show", Default = false, HelpText = "show generated code")]
+        public bool ShowGeneratedCode { get; set; }
+
         [Value(0, MetaName = "code", HelpText = "CODE block")]
         public string Code { get; set; }
 

@@ -8,7 +8,6 @@ namespace Test {
         private readonly TextReader defaultStdIn = Console.In;
         private readonly TextWriter defaultStdOut = Console.Out;
 
-        private StringReader stdIn;
         private readonly StringWriter stdOut;
 
         public IoProxy() {
@@ -22,7 +21,6 @@ namespace Test {
         public IEnumerable<string> ReadLineFromStdOut() => ReadAllFromStdOut().Split(Environment.NewLine);
 
         public void Dispose() {
-            stdIn?.Dispose();
             stdOut?.Dispose();
             Console.SetOut(defaultStdOut);
             Console.SetIn(defaultStdIn);

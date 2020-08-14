@@ -29,7 +29,7 @@ namespace Test {
             foreach (var (expects, input) in testCaseTuples) {
                 blockParser.Parse(input);
                 Assert.Equal(blockParser.MainBlock.Count, expects.Length);
-                Assert.Empty(blockParser.MainBlock);
+                Assert.Empty(blockParser.BeginBlock);
                 Assert.Empty(blockParser.EndBlock);
                 foreach (var (e, a) in expects.Zip(blockParser.MainBlock, (e, a) => (e,a))) {
                     Assert.Equal(e, a);

@@ -26,13 +26,11 @@ namespace ocs {
             }
 
             // BEGINブロック
-            builder.AddCodeBlock(opt.BeginBlock, ScriptBuilder.BlockType.Begin);
             foreach (var begin in blockParser.BeginBlock) {
                 builder.AddCodeBlock(begin, ScriptBuilder.BlockType.Begin);
             }
 
             // ENDブロック
-            builder.AddCodeBlock(opt.EndBlock, ScriptBuilder.BlockType.End);
             foreach (var end in blockParser.EndBlock) {
                 builder.AddCodeBlock(end, ScriptBuilder.BlockType.End);
             }

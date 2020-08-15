@@ -5,12 +5,6 @@ using CommandLine;
 
 namespace ocs {
     public class Options {
-        [Option('b', "begin", Default = "", HelpText = "begin codes. this code runs at begin")]
-        public string BeginBlock { get; set; }
-
-        [Option('e', "end", Default = "", HelpText = "end codes. this code runs at after all")]
-        public string EndBlock { get; set; }
-
         [Option('I', "imports", HelpText = "using Assembles")]
         public string Imports { get; set; }
 

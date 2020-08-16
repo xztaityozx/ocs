@@ -76,7 +76,10 @@ namespace ocs {
                     // アクションブロック
                     // 深さが変わるルールはCONDITIONの時と同じ
                     if (c == '}') {
-                        if (depth.Any(kv => kv.Value != 0)) continue;
+                        if (depth.Any(kv => kv.Value != 0)) {
+                            action+=c;
+                            continue;
+                        }
 
                         // ここまできたら ACTION ブロックも終了、次は終端か次のCONDITION
                         isCondition = true;

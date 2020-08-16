@@ -4,7 +4,7 @@ ocs is **o**neliner **cs**harp
 ## Install
 
 ### Build from source
-```
+```sh
 # clone this repository
 $ git clone https://github.com/xztaityozx/ocs
 $ cd ocs/ocs

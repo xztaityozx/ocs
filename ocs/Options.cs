@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using CommandLine;
 
@@ -14,7 +16,7 @@ namespace ocs {
         [Option('f', "file", HelpText = "target file")]
         public string File { get; set; }
 
-        [Option("env", HelpText = "load global environments")]
+        [Option("env", Default = false, HelpText = "load global environments")]
         public bool LoadEnvironments { get; set; }
 
         [Option("show", Default = false, HelpText = "show generated code")]
@@ -31,5 +33,12 @@ namespace ocs {
                 : new StreamReader(File),
             Separator = string.IsNullOrEmpty(FieldSeparator) ? new Regex(@"\s") : new Regex(FieldSeparator)
         };
+    }
+
+    public class OptionException : Exception {
+        public readonly IReadOnlyList<string> Errors;
+        public OptionException(IEnumerable<string> errors) {
+            Errors = errors.ToList();
+        }
     }
 }

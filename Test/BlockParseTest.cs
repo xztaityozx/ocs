@@ -21,7 +21,8 @@ namespace Test {
                 (new[]{"if(cond10.Select(k=>k+'{').All()){act10;}"}, "cond10.Select(k=>k+'{').All(){act10}"),
                 (new[]{"if((new int[\"xyz\".Where(c => {return c == 'x'}).Count()]).Length == 1){act11;}"},
                     "(new int[\"xyz\".Where(c => {return c == 'x'}).Count()]).Length == 1{act11}"),
-                (new[]{"cond.Select(item => item + '{');"}, "{cond.Select(item => item + '{');}")
+                (new[]{"cond.Select(item => item + '{');"}, "{cond.Select(item => item + '{');}"),
+                (new[]{"println($\"{F[0]}, {F[1]}\");"}, "{println($\"{F[0]}, {F[1]}\")}"),
             };
 
             var blockParser = new BlockParser();

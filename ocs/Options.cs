@@ -14,7 +14,7 @@ namespace ocs {
         [Option('f', "file", HelpText = "target file")]
         public string File { get; set; }
 
-        [Option("env", HelpText = "load global environments")]
+        [Option("env", Default = false, HelpText = "load global environments")]
         public bool LoadEnvironments { get; set; }
 
         [Option("show", Default = false, HelpText = "show generated code")]

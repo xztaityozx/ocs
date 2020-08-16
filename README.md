@@ -1,7 +1,6 @@
 # ocs
 ocs is **o**neliner **cs**harp
 
-
 ## Install
 
 ### Build from source
@@ -39,7 +38,7 @@ $ seq 10 | ocs 'BEGIN{var sum=0}{sum+=int.Parse(F0)}END{Console.WriteLine(sum)}'
 
 The code after **BEGIN** is begin block code. The code after **END** is end block code. These run once before/after main loop(like `awk`'s BEGIN, END). 
 
-### Special variable
+### Built-in variable
 #### F
 Field array.
 
@@ -70,4 +69,135 @@ F0=1 2 3 4 5, NF=6
 ```
 
 #### NR
-Number 
+Number of line
+
+**Example**
+```sh
+$ yes | head | ocs '{Console.WriteLine(NR)}'
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+
+#### Env
+Environment dictionary.
+
+```sh
+$ echo | ocs '{Console.WriteLine(Env["LANG"])}'
+ja_JP.UTF-8
+```
+
+### Built-in functions
+#### i(), d()
+`i()` is alias to `int.Parse`
+
+**Example**
+```sh
+$ echo 100 | ocs '{Console.WriteLine($"int.Parse: {int.Parse(F0)+10}, i: {i(F0)+20}")}'
+int.Parse: 110, i: 120
+```
+
+`d()` is alias to `decimal.Parse([str] ,NumberStyles.Float, CultureInfo.CurrentCulture.NumberFormat)`
+
+**Example**
+```sh
+$ echo 10 1.1 1e9| ocs '{Console.WriteLine($"{d(F[1])}, {d(F[2])}, {d(F[3])}")}'
+10, 1.1, 1000000000
+```
+
+#### print(), println()
+Shorthand to `Console.Write/Console.WriteLine`
+
+**Example**
+```sh
+seq 5 | ocs '{Console.WriteLine($"Console.WriteLine: {F0}"); println($"println: {F0}")}'
+Console.WriteLine: 1
+println: 1
+Console.WriteLine: 2
+println: 2
+Console.WriteLine: 3
+println: 3
+Console.WriteLine: 4
+println: 4
+Console.WriteLine: 5
+println: 5
+```
+
+### Pattern and Action
+
+**Example**
+
+```sh
+$ seq 10 | ocs 'i(F0)%2==0{println(F0)}'
+2
+4
+6
+8
+10
+```
+
+```sh
+$ seq 10 | ocs 'F0.Length==1{println(F0)}'
+1
+2
+3
+4
+5
+6
+7
+8
+9
+```
+
+## Options
+###  `-I, --imports`    using Assembles
+
+**Example**
+```sh
+ocs -ISystem.IO '{var sr = new StreamReader("file")}'
+```
+
+###  `-F, --field`      (Default: ) Field separator
+
+**Example**
+```sh
+cat csv | ocs -F, '{println(F[1])}'
+```
+
+###  `-f, --file`       target file
+
+**Example**
+```sh
+ocs -F, -f csv '{println(F[1])}'
+```
+
+###  `--env`            load global environments
+
+**Example**
+```sh
+$ echo | ocs '{Console.WriteLine(Env["LANG"])}'
+ja_JP.UTF-8
+```
+
+###  `--show`           (Default: false) show generated code
+
+**Example**
+```sh
+seq 100 | ocs --show 'BEGIN{var sum = 0;}END{println(sum)}{sum+=i(F0)}'
+[ 12:15:47 | Information ] Generated Code
+var sum = 0;
+using(Reader) while(Reader.Peek() > 0) {
+F0 = Reader.ReadLine();
+sum+=i(F0);
+}
+println(sum);
+
+5050
+```

@@ -54,12 +54,11 @@ namespace ocs {
 
             try {
                 var (script, diagnostics) = builder.Build(cts.Token);
+                if(opt.ShowGeneratedCode) Logger.LogInformation($"Generated Code\n{builder.GeneratedCode}");
                 foreach (var diagnostic in diagnostics) {
                     if (diagnostic.WarningLevel == 0) throw new Exception(diagnostic.ToString());
                     Logger.LogWarning(diagnostic.ToString());
                 }
-
-                if(opt.ShowGeneratedCode) Logger.LogInformation($"Generated Code\n{builder.GeneratedCode}");
 
                 var state = await script.RunAsync(global, null, cts.Token);
                 if (state.Exception != null) throw state.Exception;

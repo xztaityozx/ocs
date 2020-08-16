@@ -1,4 +1,6 @@
 # ocs
+![.NET Core CI/CD](https://github.com/xztaityozx/ocs/workflows/.NET%20Core%20CI/CD/badge.svg?branch=master)
+
 ocs is **o**neliner **cs**harp
 
 ## Install

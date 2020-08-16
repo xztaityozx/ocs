@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text.RegularExpressions;
 using CommandLine;
 
@@ -31,5 +33,12 @@ namespace ocs {
                 : new StreamReader(File),
             Separator = string.IsNullOrEmpty(FieldSeparator) ? new Regex(@"\s") : new Regex(FieldSeparator)
         };
+    }
+
+    public class OptionException : Exception {
+        public readonly IReadOnlyList<string> Errors;
+        public OptionException(IEnumerable<string> errors) {
+            Errors = errors.ToList();
+        }
     }
 }

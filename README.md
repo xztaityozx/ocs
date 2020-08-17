@@ -13,19 +13,19 @@ $ cd ocs/ocs
 
 # build ocs
 # for linux x64
-$ dotnet publish -c Release --self-containd true -p:PublishSingleFile=true -p:PublishReadyToRun=true -r linux-x64
+$ dotnet publish -c Release --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -r linux-x64
 # for windows x64
-$ dotnet publish -c Release --self-containd true -p:PublishSingleFile=true -p:PublishReadyToRun=true -r win-x64
+$ dotnet publish -c Release --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -r win-x64
 # for macos
-$ dotnet publish -c Release --self-containd true -p:PublishSingleFile=true -p:PublishReadyToRun=true -r osx-x64
+$ dotnet publish -c Release --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -r osx-x64
 
 # make alias
-$ alias ocs=$PWD/bin/Release/netcoreapp3.1/publish/linux-x64/ocs
-$ alias ocs=$PWD/bin/Release/netcoreapp3.1/publish/win-x64/ocs.exe
-$ alias ocs=$PWD/bin/Release/netcoreapp3.1/publish/osx-x64/ocs
+$ alias ocs=$PWD/bin/Release/netcoreapp3.1/linux-x64/publish/ocs
+$ alias ocs=$PWD/bin/Release/netcoreapp3.1/win-x64/publish/ocs.exe
+$ alias ocs=$PWD/bin/Release/netcoreapp3.1/osx-x64/publish/ocs
 
 # or add path to `PATH` environment
-$ export PATH="${PATH}:$PWD/bin/Release/netcoreapp3.1/publish/linux-x64/ocs"
+$ export PATH="${PATH}:$PWD/bin/Release/netcoreapp3.1/linux-x64/publish/ocs"
 ```
 
 ### Download binary from GitHub Releases

@@ -11,7 +11,8 @@ namespace Test {
         public void FieldTest() {
             var data = new[] {
                 new {f0 = "a b c d", sep = new Regex(@"\s")},
-                new {f0 = "a\tb\tc\td", sep = new Regex(@"\s")}
+                new {f0 = "a\tb\tc\td", sep = new Regex(@"\s")},
+                new {f0 = "", sep = new Regex(@" ")}
             };
 
             foreach (var item in data) {
@@ -19,7 +20,7 @@ namespace Test {
                 foreach (var (e,a) in new List<string>{item.f0}.Concat(item.sep.Split(item.f0)).Zip(gv.F)) {
                     Assert.Equal(e, a);
                 }
-                Assert.Equal(item.sep.Split(item.f0).Count(s => !string.IsNullOrEmpty(s)) + 1, gv.NF);
+                Assert.Equal(item.sep.Split(item.f0).Count(s => !string.IsNullOrEmpty(s)), gv.NF);
             }
         }
 

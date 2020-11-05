@@ -50,7 +50,7 @@ namespace ocs {
         /// <summary>
         /// Number of fields
         /// </summary>
-        public int NF => F.Count;
+        public int NF => Math.Max(0, F.Count - 1);
 
         /// <summary>
         /// Current line number

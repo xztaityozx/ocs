@@ -9,7 +9,7 @@ namespace ocs {
         private static async Task Main(string[] args) {
             try {
                 var opt = Parser.Default.ParseArguments<Options>(args).MapResult(o => o, e =>
-                    throw new OptionException(e.Select(s => s.ToString()))
+                    throw new OptionException(e.Select(s => s.ToString().Replace("CommandLine.", "")))
                 );
 
                 using var cts = new CancellationTokenSource();
@@ -32,8 +32,6 @@ namespace ocs {
                 foreach (var err in e.Errors) {
                     if(err != nameof(HelpRequestedError) && err != nameof(VersionRequestedError))
                         Logger.LogError(err);
-                    else 
-                        Logger.LogWarning("finished ocs");
                     return;
                 }
             }

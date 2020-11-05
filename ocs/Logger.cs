@@ -27,7 +27,7 @@ namespace ocs {
                 [LogLevel.Debug] = o => Print(LogLevel.Debug, ConsoleColor.Green, o),
                 [LogLevel.Information] = o => Print(LogLevel.Information, ConsoleColor.Cyan, o),
                 [LogLevel.Warning] = o => Print(LogLevel.Warning, ConsoleColor.Yellow, o),
-                [LogLevel.Error] = o => Print(LogLevel.Critical, ConsoleColor.Red, o),
+                [LogLevel.Error] = o => Print(LogLevel.Error, ConsoleColor.Red, o),
                 [LogLevel.Critical] = o => Print(LogLevel.Critical, ConsoleColor.DarkRed, o)
             };
 

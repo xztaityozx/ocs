@@ -32,8 +32,8 @@ namespace Test
                 (pattern: "END", action: "println(F[2])", expect: "println(F[2]);"),
                 (pattern: "BEGIN", action: null, expect: "println(F0);"),
                 (pattern: "END", action: null, expect: "println(F0);"),
-                (pattern: "Pattern", action: null, expect: "if(Pattern){println(F0)}"),
-                (pattern: "Pattern", action: "println(F[3])", expect: "if(Pattern){println(F[3])}"),
+                (pattern: "Pattern", action: null, expect: "if(Pattern){println(F0);}"),
+                (pattern: "Pattern", action: "println(F[3])", expect: "if(Pattern){println(F[3]);}"),
                 (pattern: "", action: "println(F[4])", expect: "println(F[4]);"),
             };
 

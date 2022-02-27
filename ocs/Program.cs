@@ -23,7 +23,7 @@ collection.AddLogging(builder =>
     })
     .AddSingleton(config)
     .AddSingleton<RenderService>()
-    .AddSingleton<CompileService>();
+    .AddSingleton<CompileService<Program>>();
 
 using var provider = collection.BuildServiceProvider();
 
@@ -78,8 +78,8 @@ int Run(Options options)
 
         logger?.LogDebug("Runner class generated: {class}", renderedClass);
 
-        var compileService = provider.GetService<CompileService>() ??
-                             throw new GetServiceFailedException(typeof(CompileService));
+        var compileService = provider.GetService<CompileService<Program>>() ??
+                             throw new GetServiceFailedException(typeof(CompileService<Program>));
 
         if (options.PrintGenerated)
         {

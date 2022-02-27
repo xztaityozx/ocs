@@ -9,7 +9,7 @@ using ocs.Lib.Config;
 
 namespace ocs.Service.Compile;
 
-internal class CompileService
+public class CompileService<T>
 {
     private readonly ILogger logger;
     private readonly HashSet<string> referenceList;
@@ -27,7 +27,7 @@ internal class CompileService
     };
 
     // ReSharper disable once SuggestBaseTypeForParameterInConstructor
-    public CompileService(Config config, ILogger<Program> logger)
+    public CompileService(Config config, ILogger<T> logger)
     {
         var objectAssemblyLocation = typeof(object).Assembly.Location;
         var assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location);

@@ -37,7 +37,7 @@
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include=".\ocs\.editorconfig" />
+    <None Include=".\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>

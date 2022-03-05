@@ -1,0 +1,28 @@
+name: Create Releases
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+    - name: Setup .NET 6.0.x
+      uses: actions/setup-dotnet@v1
+      with:
+        dotnet-version: 6.0.x
+        
+    - name: Setup dotnet-releaser
+      run: dotnet tool install --global dotnet-releaser
+      shell: bash
+      
+    - name: Build, Test, Cover, Publish Releases
+      shell: bash
+      run: dotnet-releaser run --github-token "${{secrets.GITHUB_TOKEN}}" ./ocs/dotnet-releaser.toml
+    
+    

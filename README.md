@@ -12,24 +12,22 @@ $ git clone https://github.com/xztaityozx/ocs
 $ cd ocs/ocs
 
 # build ocs
-# for linux x64
-$ dotnet publish -c Release --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -r linux-x64
-# for windows x64
-$ dotnet publish -c Release --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -r win-x64
-# for macos
-$ dotnet publish -c Release --self-contained true -p:PublishSingleFile=true -p:PublishReadyToRun=true -r osx-x64
+$ make publish
 
-# make alias
-$ alias ocs=$PWD/bin/Release/netcoreapp3.1/linux-x64/publish/ocs
-$ alias ocs=$PWD/bin/Release/netcoreapp3.1/win-x64/publish/ocs.exe
-$ alias ocs=$PWD/bin/Release/netcoreapp3.1/osx-x64/publish/ocs
-
-# or add path to `PATH` environment
-$ export PATH="${PATH}:$PWD/bin/Release/netcoreapp3.1/linux-x64/publish/ocs"
+# install ocs to $HOME/.local/bin
+$ make install
+# example) install to /usr/loca/bin/
+$ PREFIX=/usr/local/bin/ make install
 ```
 
 ### Download binary from GitHub Releases
 Download standalone binary from [release page](https://github.com/xztaityozx/ocs/releases)
+
+## Uninstall
+
+```sh
+$ make uninstall
+```
 
 ## Usage
 ### Basic usage
@@ -159,47 +157,88 @@ $ seq 10 | ocs 'F0.Length==1{println(F0)}'
 ```
 
 ## Options
-###  `-I, --imports`    using Assembles
+###  `-U, --using-list`    using Assembles
 
 **Example**
 ```sh
-ocs -ISystem.IO '{var sr = new StreamReader("file")}'
+$ ocs -U System.IO '...'
+
+# multiple
+$ ocs -U System.IO,System.Collections.Generic '...' 
 ```
 
-###  `-F, --field`      (Default: ) Field separator
-
+###  `-d, --input-delimiter`      (Default: ) 
 **Example**
 ```sh
-cat csv | ocs -F, '{println(F[1])}'
+cat csv | ocs -d, '{println(F[1])}'
 ```
 
-###  `-f, --file`       target file
+###  `-f, --file`       input file
 
 **Example**
 ```sh
-ocs -F, -f csv '{println(F[1])}'
+ocs -d, -f csv '{println(F[1])}'
 ```
 
-###  `--env`            load global environments
-
+### `-D, --output-delimiter`      (Default: )
 **Example**
 ```sh
-$ echo | ocs '{Console.WriteLine(Env["LANG"])}'
-ja_JP.UTF-8
+cat csv | ocs -d, -D : '{println(F)}' 
 ```
 
-###  `--show`           (Default: false) show generated code
-
+### `-R, --reference-list`      list of reference path
 **Example**
+
 ```sh
-seq 100 | ocs --show 'BEGIN{var sum = 0;}END{println(sum)}{sum+=i(F0)}'
-[ 12:15:47 | Information ] Generated Code
-var sum = 0;
-using(Reader) while(Reader.Peek() > 0) {
-F0 = Reader.ReadLine();
-sum+=i(F0);
+ocs -R YourDll.dll '...'
+```
+
+### `--language-version`        (Default: C# 10) set language version
+set compile language version
+
+### ` -r, --remove-empty`        (Default: false) remove empty entries from inputs
+
+```sh
+$ echo "a   b   c    d" | ocs "{println(F[1], F[4])}"
+a b
+
+$ echo "a   b   c    d" | ocs -r "{println(F[1], F[4])}"
+a d
+```
+
+### ` -g, --use-regexp`          (Default: false) use regular expressions for input delimiter
+
+```sh
+$ echo "a   b   c   d" | ocs -gd'\s+' "{println(F[1], F[4])}"
+a d
+```
+
+### ` --print-generated`         (Default: false) print generated code and exit
+
+```sh
+$ ocs --print-generated "{println(F0)}"
+public class Runner : IRunner
+{
+    private Global global;
+    public Runner(Global global) => this.global = global;
+    private string Ofs => global.Ofs;
+    private int NR => global.NR;
+    private int NF => global.NF;
+    private List<string> F => global.F;
+    private string F0 => global.F0;
+    private void print(params object[] o) => global.Print(Global.PrintOption.None, o);
+    private void println(params object[] o) => global.Print(Global.PrintOption.Line, o);
+    private int i(string s) => global.i(s);
+    private decimal d(string s) => global.d(s);
+    // Entry point
+    public void Run()
+    {
+        while (global.NextLine())
+        {
+            println(F0);
+        }
+    }
 }
-println(sum);
-
-5050
 ```
+
+

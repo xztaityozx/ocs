@@ -67,7 +67,7 @@ public class CompileServiceTest : IClassFixture<ConfigFixture>
 
         Assert.Equal(script, actual.ToString());
     }
-    
+
     [Fact]
     public void Test_ParseStringThrows()
     {

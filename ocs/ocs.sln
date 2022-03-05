@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32014.148
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ocs", "ocs.csproj", "{A64968EC-C6FC-4E4E-BDEB-2FB3CD2E6C16}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Test", "..\Test\Test.csproj", "{F03673BC-6EEC-4936-9329-1319C1026107}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{47A1B572-486C-469A-9B79-1913AF392FB6}"
+	ProjectSection(SolutionItems) = preProject
+		..\.gitignore = ..\.gitignore
+		..\.github\workflows\CI-CD.yml = ..\.github\workflows\CI-CD.yml
+		dotnet-releaser.toml = dotnet-releaser.toml
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{A64968EC-C6FC-4E4E-BDEB-2FB3CD2E6C16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A64968EC-C6FC-4E4E-BDEB-2FB3CD2E6C16}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A64968EC-C6FC-4E4E-BDEB-2FB3CD2E6C16}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A64968EC-C6FC-4E4E-BDEB-2FB3CD2E6C16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F03673BC-6EEC-4936-9329-1319C1026107}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F03673BC-6EEC-4936-9329-1319C1026107}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F03673BC-6EEC-4936-9329-1319C1026107}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F03673BC-6EEC-4936-9329-1319C1026107}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2D393690-A216-43F1-B133-09249714CE0D}
+	EndGlobalSection
+EndGlobal

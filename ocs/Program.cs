@@ -1,85 +1,110 @@
-﻿using System;
-using System.Linq;
-using System.Threading;
-using System.Threading.Tasks;
+﻿using System.Collections.Immutable;
 using CommandLine;
+using CommandLine.Text;
+using Microsoft.CodeAnalysis;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using ocs;
+using ocs.Cli;
+using ocs.Global;
+using ocs.Lib.Config;
+using ocs.Service.Compile;
+using ocs.Service.Template;
 
-namespace ocs {
-    internal class Program {
-        private static async Task Main(string[] args) {
-            try {
-                var opt = Parser.Default.ParseArguments<Options>(args).MapResult(o => o, e =>
-                    throw new OptionException(e.Select(s => s.ToString().Replace("CommandLine.", "")))
-                );
+var config = ConfigFactory.Create();
+var collection = new ServiceCollection();
+collection.AddLogging(builder =>
+    {
+        builder.AddConsole(configure =>
+        {
+            configure.LogToStandardErrorThreshold = config.LogLevel;
+        });
+        builder.AddFilter(level => level >= config.LogLevel);
+    })
+    .AddSingleton(config)
+    .AddSingleton<RenderService>()
+    .AddSingleton<CompileService<Program>>();
 
-                using var cts = new CancellationTokenSource();
-                Console.CancelKeyPress += (sender, eventArgs) => {
-                    cts.Cancel();
-                    eventArgs.Cancel = true;
-                };
+using var provider = collection.BuildServiceProvider();
 
-                await Application.Run(opt, cts.Token);
-            }
-            catch (FormatException e) {
-                Logger.LogError(e.Message);
-                Environment.Exit(1);
-            }
-            catch (OperationCanceledException e) {
-                Logger.LogError(e.Message);
-                Environment.Exit(1);
-            }
-            catch (OptionException e) {
-                foreach (var err in e.Errors) {
-                    if(err != nameof(HelpRequestedError) && err != nameof(VersionRequestedError))
-                        Logger.LogError(err);
-                    return;
-                }
-            }
-            catch (Exception e) {
-                Logger.LogCritical(e.Message);
-                Environment.Exit(1);
-            }
-        }
+var parser = new Parser(with => with.HelpWriter = null);
+var result = parser.ParseArguments<Options>(args);
+
+
+return result.MapResult(Run, PrintParseError);
+
+int PrintParseError(IEnumerable<Error> errors)
+{
+    HelpText help;
+    if (errors.IsVersion())
+    {
+        help = HelpText.AutoBuild(result);
+    }
+    else
+    {
+        help = HelpText.AutoBuild(result, h =>
+        {
+            h.AdditionalNewLineAfterOption = false;
+            h.Copyright = "Copyright (c) 2022 xztaityozx";
+            h.AddPostOptionsLine("------- loaded config -------" + Environment.NewLine + config);
+            return HelpText.DefaultParsingErrorsHandler(result, h);
+        }, e => e);
     }
 
-    public static class Application {
-        public static async Task Run(Options opt, CancellationToken token) {
-            var global = opt.BuildGlobal();
-            var builder = new ScriptBuilder();
-            var blockParser = new BlockParser();
-            blockParser.Parse(opt.Code);
+    Console.WriteLine(help);
+    return 1;
+}
 
-            // BEGINブロック
-            foreach (var begin in blockParser.BeginBlock) {
-                builder.AddCodeBlock(begin, ScriptBuilder.BlockType.Begin);
-            }
+int Run(Options options)
+{
+    var logger = provider.GetService<ILogger<Program>>();
+    try
+    {
+        using var global = new Global(new GlobalVariableOption
+        {
+            RemoveEmpty = options.RemoveEmpty,
+            InputSeparator = options.InputDelimiter,
+            UseRegex = options.UseRegexp,
+            OutputSeparator = options.OutputDelimiter,
+            InputStream = options.File is null
+                ? Console.OpenStandardInput()
+                : new StreamReader(options.File.FullName).BaseStream
+        });
 
-            // ENDブロック
-            foreach (var end in blockParser.EndBlock) {
-                builder.AddCodeBlock(end, ScriptBuilder.BlockType.End);
-            }
+        var ocsScripts = ocs.Lib.Parser.Parse(options.Script);
+        var renderedClass =
+            (provider.GetService<RenderService>() ?? throw new GetServiceFailedException(typeof(RenderService)))
+            .Render(ocsScripts);
 
-            // Mainブロック
-            foreach (var main in blockParser.MainBlock) {
-                builder.AddCodeBlock(main);
-            }
+        logger?.LogDebug("Runner class generated: {class}", renderedClass);
 
+        var compileService = provider.GetService<CompileService<Program>>() ??
+                             throw new GetServiceFailedException(typeof(CompileService<Program>));
 
-            if (!string.IsNullOrEmpty(opt.Imports)) {
-                var imports = opt.Imports.Split(',', StringSplitOptions.RemoveEmptyEntries);
-                if (imports.Any()) builder.AddImports(imports);
-            }
-
-            var (script, diagnostics) = builder.Build(token);
-            if (opt.ShowGeneratedCode) Logger.LogInformation($"Generated Code\n{builder.GeneratedCode}");
-
-            foreach (var diagnostic in diagnostics) {
-                if (diagnostic.WarningLevel == 0) throw new Exception(diagnostic.ToString());
-                Logger.LogWarning(diagnostic.ToString());
-            }
-
-            var state = await script.RunAsync(global, null, token);
-            if (state.Exception != null) throw state.Exception;
+        if (options.PrintGenerated)
+        {
+            Console.WriteLine(compileService.ParseString(renderedClass).GetRoot().NormalizeWhitespace().ToFullString());
+            return (int)ExitCode.Success;
         }
+
+        var param = new CompileParameter(global, options.UsingList ?? ImmutableArray<string>.Empty, options.ReferenceList ?? ImmutableArray<string>.Empty,
+            options.LanguageVersion ?? config.LanguageVersion, renderedClass);
+
+        logger?.LogDebug("Compile parameter: {param}", param);
+
+        var runner = compileService.Compile(param);
+        runner?.Run();
+
+        return (int)ExitCode.Success;
+    }
+    catch (FileNotFoundException e)
+    {
+        logger?.LogError("file not found: {file}", e.FileName);
+        return (int)ExitCode.FileNotFound;
+    }
+    catch (GetServiceFailedException e)
+    {
+        logger?.LogError("{msg}", e.Message);
+        return (int)ExitCode.Failure;
     }
 }

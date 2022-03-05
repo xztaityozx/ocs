@@ -26,11 +26,11 @@ public static class ConfigFactory
 
         return new Config
         {
-            InlineCode = provider.GetSection("inline").Get<string[]>(),
-            LogLevel = provider.GetValue("logLevel", LogLevel.Error),
-            UsingList = provider.GetSection("using").Get<string[]>() ?? Array.Empty<string>(),
-            ReferenceList = provider.GetSection("references").Get<string[]>() ?? Array.Empty<string>(),
-            LanguageVersion = provider.GetValue("langVersion", LanguageVersion.CSharp10)
+            InlineCode = provider.GetSection("InlineCode").Get<string[]>(),
+            LogLevel = provider.GetValue("LogLevel", LogLevel.Error),
+            UsingList = provider.GetSection("UsingList").Get<string[]>() ?? Array.Empty<string>(),
+            ReferenceList = provider.GetSection("ReferenceList").Get<string[]>() ?? Array.Empty<string>(),
+            LanguageVersion = provider.GetValue("LanguageVersion", LanguageVersion.CSharp10)
         };
     }
 }

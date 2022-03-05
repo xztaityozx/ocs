@@ -20,7 +20,6 @@ rid = ["rhel-x64"]
 [nuget]
 publish = false
 
-# ‚»‚Ì‚¤‚¿
 [brew]
 publish = false
 

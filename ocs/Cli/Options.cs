@@ -17,11 +17,11 @@ namespace ocs.Cli
         public string OutputDelimiter { get; init; } = " ";
 
         [Option('U', "using-list", Default = null, HelpText = "HelpTextUsingList", Separator = ',', ResourceType = typeof(Resource))]
-        public ImmutableArray<string>? UsingList { get; init; } = null;
+        public IEnumerable<string> UsingList { get; init; } = null;
 
         [Option('R', "reference-list", Default = null, HelpText = "HelpTextReferenceList",
             Separator = ',', ResourceType = typeof(Resource))]
-        public ImmutableArray<string>? ReferenceList { get; init; } = null;
+        public IEnumerable<string> ReferenceList { get; init; } = null;
 
         [Option("language-version", Default = null, HelpText = "HelpTextLanguageVersion", ResourceType = typeof(Resource))]
         public LanguageVersion? LanguageVersion { get; init; } = null;

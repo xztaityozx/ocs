@@ -34,7 +34,10 @@ public class CompileService<T>
         if (assemblyPath is null) throw new AssemblyPathIsNullException();
         referenceList = new HashSet<string>
         {
-            typeof(IRunner).Assembly.Location, typeof(Global.Global).Assembly.Location, objectAssemblyLocation
+            typeof(IRunner).Assembly.Location,
+            typeof(Global.Global).Assembly.Location,
+            objectAssemblyLocation,
+            typeof(Console).Assembly.Location
         };
 
         foreach (var item in new[] { "mscorlib", "System.Text.Json", "System.Runtime", "System.Collections" })

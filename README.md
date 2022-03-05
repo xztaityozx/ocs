@@ -1,5 +1,5 @@
 # ocs
-![.NET Core CI/CD](https://github.com/xztaityozx/ocs/workflows/.NET%20Core%20CI/CD/badge.svg?branch=master)
+![.NET Core CI/CD](https://github.com/xztaityozx/ocs/workflows/.NET%20Core%20CI/CD/badge.svg?branch=main)
 
 ocs is **o**neliner **cs**harp
 

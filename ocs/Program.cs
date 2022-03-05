@@ -29,7 +29,11 @@ collection.AddLogging(builder =>
 
 using var provider = collection.BuildServiceProvider();
 
-var parser = new Parser(with => with.HelpWriter = null);
+var parser = new Parser(with =>
+{
+    with.HelpWriter = null;
+    with.EnableDashDash = true;
+});
 var result = parser.ParseArguments<Options>(args);
 
 

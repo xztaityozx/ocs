@@ -7,9 +7,11 @@ using Microsoft.Extensions.Logging;
 using ocs;
 using ocs.Cli;
 using ocs.Global;
+using ocs.Lib;
 using ocs.Lib.Config;
 using ocs.Service.Compile;
 using ocs.Service.Template;
+using Parser = CommandLine.Parser;
 
 var config = ConfigFactory.Create();
 var collection = new ServiceCollection();
@@ -87,7 +89,8 @@ int Run(Options options)
             return (int)ExitCode.Success;
         }
 
-        var param = new CompileParameter(global, options.UsingList ?? ImmutableArray<string>.Empty, options.ReferenceList ?? ImmutableArray<string>.Empty,
+        var param = new CompileParameter(global, options.UsingList ?? ImmutableArray<string>.Empty,
+            options.ReferenceList ?? ImmutableArray<string>.Empty,
             options.LanguageVersion ?? config.LanguageVersion, renderedClass);
 
         logger?.LogDebug("Compile parameter: {param}", param);
@@ -105,6 +108,22 @@ int Run(Options options)
     catch (GetServiceFailedException e)
     {
         logger?.LogError("{msg}", e.Message);
+        return (int)ExitCode.Failure;
+    }
+    catch (CompileFailedException e)
+    {
+        foreach (var diagnostic in e.Errors)
+        {
+            logger?.LogError("{msg}", diagnostic.GetMessage());
+        }
+
+        return (int)ExitCode.Failure;
+    }
+    catch (Exception e) when (e is AssemblyPathIsNullException or InvalidSyntaxException
+                                  or CreateRunnerInstanceFailedException or ParseGeneratedScriptFailedException)
+    {
+        logger?.LogError("{msg}", e.Message);
+
         return (int)ExitCode.Failure;
     }
 }

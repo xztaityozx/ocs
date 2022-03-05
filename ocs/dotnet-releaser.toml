@@ -1,0 +1,29 @@
+# configuration file for dotnet-releaser
+[msbuild]
+project = "ocs.sln"
+configuration = "release"
+
+[msbuild.properties]
+PublishTrimmed = false
+PublishSingleFile = false
+SelfContained = false
+PublishReadyToRun = false
+
+[github]
+user = "xztaityozx"
+repo = "ocs"
+
+[[pack]]
+publish = false
+rid = ["rhel-x64"]
+
+[nuget]
+publish = false
+
+# ‚»‚Ì‚¤‚¿
+[brew]
+publish = false
+
+[service]
+publish = false
+

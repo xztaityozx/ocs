@@ -33,15 +33,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <EditorConfigFiles Remove="C:\Users\xztaityozx\source\repos\ocs\ocs\Global\.editorconfig" />
-  </ItemGroup>
-
-  <ItemGroup>
     <None Include="..\README.md">
       <Pack>True</Pack>
       <PackagePath>\</PackagePath>
     </None>
-    <None Include="C:\Users\xztaityozx\source\repos\ocs\ocs\.editorconfig" />
+    <None Include=".\ocs\.editorconfig" />
   </ItemGroup>
 
   <ItemGroup>

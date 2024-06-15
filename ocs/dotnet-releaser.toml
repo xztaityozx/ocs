@@ -15,7 +15,7 @@ repo = "ocs"
 
 [[pack]]
 publish = false
-rid = ["rhel-x64"]
+rid = ["rhel-x64", "win-arm"]
 
 [nuget]
 publish = false

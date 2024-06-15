@@ -47,7 +47,6 @@ namespace ocs.Lib
         {
             A = '{', B = '(', C = '['
         }
-        private static bool IsBracket(char c) => c is (char)Bracket.A or (char)Bracket.B or (char)Bracket.C;
 
         /// <summary>
         /// カッコの終端がどこまでかを返す。カッコの始点は削ってある必要がある
@@ -77,7 +76,7 @@ namespace ocs.Lib
                 {
                     '"' => ParseStringLiteral(line[(currentPosition + 1)..]),
                     '\'' => ParseCharLiteral(line[(currentPosition + 1)..]),
-                    var c when IsBracket(c) => ParseBracketsPair(line[(currentPosition + 1)..], (Bracket)c),
+                    (char)Bracket.A or (char)Bracket.B or (char)Bracket.C => ParseBracketsPair(line[(currentPosition + 1)..], (Bracket)line[currentPosition]),
                     _ => 0
                 } + 1;
             }

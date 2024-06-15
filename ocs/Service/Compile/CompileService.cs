@@ -29,15 +29,13 @@ public class CompileService<T>
     public CompileService(Config config, ILogger<T> logger)
     {
         var objectAssemblyLocation = typeof(object).Assembly.Location;
-        var assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location);
-        if (assemblyPath is null) throw new AssemblyPathIsNullException();
-        referenceList = new HashSet<string>
-        {
+        var assemblyPath = Path.GetDirectoryName(typeof(object).Assembly.Location) ?? throw new AssemblyPathIsNullException();
+        referenceList = [
             typeof(IRunner).Assembly.Location,
             typeof(Global.Global).Assembly.Location,
             objectAssemblyLocation,
             typeof(Console).Assembly.Location
-        };
+        ];
 
         foreach (var item in new[] { "mscorlib", "System.Text.Json", "System.Runtime", "System.Collections" })
         {

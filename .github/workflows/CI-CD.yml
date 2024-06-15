@@ -9,7 +9,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-latest, windows-latest, macOS-latest]
-        dotnet-version: [7.0.x]
+        dotnet-version: [8.0.x]
     env: 
       DOTNET_CLI_TELEMETRY_OPTOUT: 1
       DOTNET_SKIP_FIRST_TIME_EXPERIENCE: 1
@@ -17,15 +17,15 @@ jobs:
       NUGET_XMLDOC_MODE: skip
 
     steps:
-    - uses: actions/checkout@v2
-    - uses: actions/cache@v1
+    - uses: actions/checkout@v4
+    - uses: actions/cache@v4
       with:
         path: ${{ github.workspace }}/.nuget/packages
         key: nuget-${{ matrix.os }}-${{ matrix.dotnet-version }}
         restore-keys: |
           nuget-${{ matrix.os }}-
     - name: Setup .NET Core
-      uses: actions/setup-dotnet@v1
+      uses: actions/setup-dotnet@v4
       with:
         dotnet-version: ${{ matrix.dotnet-version }}
     - name: Test

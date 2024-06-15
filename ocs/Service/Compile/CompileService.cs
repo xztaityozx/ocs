@@ -61,7 +61,7 @@ public class CompileService<T>
         var tree = CSharpSyntaxTree.ParseText(generatedScript,
             CSharpParseOptions.Default.WithLanguageVersion(config.LanguageVersion), "Runner.cs");
         var diagnostic = tree.GetDiagnostics().ToArray();
-        if (!diagnostic.Any())
+        if (diagnostic.Length == 0)
         {
             return tree;
         }

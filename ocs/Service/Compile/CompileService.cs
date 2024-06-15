@@ -1,5 +1,4 @@
 ﻿using System.Runtime.Loader;
-using System.Runtime.Serialization;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -138,24 +137,16 @@ public class CompileService<T>
     }
 }
 
-[Serializable]
 public class CreateRunnerInstanceFailedException : Exception
 {
     public CreateRunnerInstanceFailedException() : base("failed to create Runner instance") { }
-
-    protected CreateRunnerInstanceFailedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
 
-[Serializable]
 public class ParseGeneratedScriptFailedException : Exception
 {
     public ParseGeneratedScriptFailedException() : base("failed to parse generated script") { }
-
-    protected ParseGeneratedScriptFailedException(SerializationInfo serializationInfo, StreamingContext streamingContext)
-        : base(serializationInfo, streamingContext) { }
 }
 
-[Serializable]
 public class CompileFailedException : Exception
 {
 
@@ -165,15 +156,9 @@ public class CompileFailedException : Exception
     }
 
     public IEnumerable<Diagnostic> Errors { get; init; }
-
-    protected CompileFailedException(SerializationInfo info, StreamingContext context) : base(info, context) { }
 }
 
-[Serializable]
 public class AssemblyPathIsNullException : Exception
 {
     public AssemblyPathIsNullException() : base("failed to find typeof(object) assembly path") { }
-
-    protected AssemblyPathIsNullException(SerializationInfo serializationInfo, StreamingContext streamingContext)
-        : base(serializationInfo, streamingContext) { }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Diagnostics.CodeAnalysis;
-using System.Runtime.Serialization;
 using System.Text;
 
 namespace ocs.Lib
@@ -179,10 +178,7 @@ namespace ocs.Lib
         }
     }
 
-    [Serializable]
-    public sealed class InvalidSyntaxException : Exception
+    public sealed class InvalidSyntaxException(string message) : Exception(message)
     {
-        public InvalidSyntaxException(string message) : base(message) { }
-        private InvalidSyntaxException(SerializationInfo info, StreamingContext context) : base(info, context) { }
     }
 }

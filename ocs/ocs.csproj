@@ -9,7 +9,7 @@
     <RepositoryUrl>https://github.com/xztaityozx/ocs</RepositoryUrl>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <Copyright>xztaityozx</Copyright>
-    <Version>$(VersionPrefix)2.2.1</Version>
+    <Version>$(VersionPrefix)2.2.2</Version>
   </PropertyGroup>
 
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">

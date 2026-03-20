@@ -20,6 +20,9 @@ rid = ["rhel-x64", "win-arm"]
 [nuget]
 publish = false
 
+[scoop]
+publish = false
+
 [brew]
 publish = false
 

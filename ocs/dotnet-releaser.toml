@@ -12,7 +12,6 @@ PublishReadyToRun = false
 [github]
 user = "xztaityozx"
 repo = "ocs"
-branch = "main"
 
 [[pack]]
 publish = false
